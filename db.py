@@ -1,11 +1,12 @@
 
 import mysql.connector
+import env
 
 mydb = mysql.connector.connect(
-            host=,
-            user=,
-            password=,
-            database=
+            host=env.HOST,
+            user=env.USER,
+            password=env.PASSWORD,
+            database=env.DATABASE
         )
 mycursor = mydb.cursor()
 
