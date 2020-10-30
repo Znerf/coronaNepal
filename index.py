@@ -5,15 +5,8 @@ import requests
 
 from db import db
 
-
-
-
 app = FastAPI()
 database= db()
-
-
-
-api="https://data.nepalcorona.info/api/v1/covid"
 
 @app.get("/")
 def read_root():
@@ -22,7 +15,7 @@ def read_root():
 
 @app.get("/data")
 def read_root():
-  # r = requests.get(api) 
+  # r = requests.get(env.DataAPI) 
   # data = r.json() 
 
   db.insertmapCoordinate([1.1,2.1,3.1,4.1])
