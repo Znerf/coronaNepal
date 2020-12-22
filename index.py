@@ -1,29 +1,33 @@
 from typing import Optional
-from fastapi import FastAPI
+# from fastapi import FastAPI
 
+from flask import Flask, session
+app = Flask(__name__)
+# app.secret_key = "hello"
+# app.permanent_session_lifetime = timedelta(minutes=5)
 
 import requests
 
 from db import db
 import env
 
-app = FastAPI()
+# app = FastAPI()
 database= db()
 
-@app.get("/")
-def read_root():
+@app.route("/")
+def read_root7():
     return {"Hello": "World"}
 
 
-@app.get("/data")
-def read_root():
+@app.route("/data")
+def read_root6():
   # r = requests.get(env.DataAPI) 
   # data = r.json() 
   # return data
   db.insertmapCoordinate([1.1,2.1,3.1,4.1])
 
-@app.get("/district")
-def read_root():
+@app.route("/district")
+def read_root5():
   r = requests.get(env.DistrictList)
   data = r.json() 
 
@@ -43,7 +47,7 @@ def read_root():
     db.insertDistrict(districtid, name,"",code,province,centroidkey,bboxkey)
     # break
 
-  return True
+  return "True"
   # db.insertmapCoordinate([1.1,2.1,3.1,4.1])
 
   
@@ -62,8 +66,8 @@ def read_root():
 
   # print( mycursor.fetchall())
 
-@app.get("/municipality")
-def read_root():
+@app.route("/municipality")
+def read_root4():
   r = requests.get(env.MunicipalityList)
   data = r.json() 
 
@@ -84,10 +88,10 @@ def read_root():
     db.insertMunicipality(municipalityid,bboxkey,name,"",code,typ,centroidkey)
     # break
 
-  return True
+  return "True"
 
-@app.get("/location")
-def read_root():
+@app.route("/location")
+def read_root3():
   r = requests.get(env.MunicipalityList)
   data = r.json() 
 
@@ -97,11 +101,11 @@ def read_root():
     db.insertLocation(municipalityid,districtid)
     # break
 
-  return True
+  return "True"
 
 
-@app.get("/individual")
-def read_root():
+@app.route("/individual")
+def read_root2():
   r = requests.get(env.IndividualList)
   data = r.json() 
 
@@ -147,12 +151,12 @@ def read_root():
     db.insertIndividual(id2,value,gender,age,occupation,createdon,modifiedon,locationid,statusid,coordinateid)
     # break
 
-  return True
+  return "True"
 
 
 
-@app.get("/individualcheck")
-def read_root():
+@app.route("/individualcheck")
+def read_root1():
   r = requests.get(env.IndividualList)
   data = r.json() 
 
@@ -213,7 +217,7 @@ def read_root():
     db.insertIndividual(id2,value,gender,age,occupation,createdon,modifiedon,locationid,statusid,coordinateid)
     # break
 
-  return True
+  return "True"
 
 
 # @app.get("/individualupdate")
@@ -271,3 +275,93 @@ def read_root():
 #     # break
 
 #   return True
+
+
+@app.route("/dataapi")
+def read_data():
+  a=db.readIndividual()
+  return a
+
+@app.route("/datadistrict")
+def read_district():
+  a=db.readDistrict()
+  return a
+
+@app.route("/dataMun")
+def read_mun():
+  a=db.readMun()
+  return a
+
+
+# @app.route("/adduser")
+# def adduser():
+#   if len( db.checkemail('znedrfii','sdf'))==0:
+#     return "True"
+#   else:
+#     return "False"  
+#   # db.insertuser("znerfii","znerfii.a1@gmail.com","database1")
+#   return "True"
+
+# def login():
+#   if len( db.checklogin('znedrfii','database1'))==0:
+#     session["user"] = user
+#     session["key"] =
+#   else:
+#     return "False"  
+@app.route("/dataprovince")
+def readpro():
+  return db.readProvince()
+  
+@app.route("/province")
+def read_pro():
+  db.deletepro()
+  a= db.readIndividualnon()
+  district=db.readDistrictnon()
+  # print(district)
+  p1=0
+  p2=0
+  p3=0
+  p4=0
+  p5=0
+  p6=0
+  p7=0
+  # print(len(a))
+  print(a[0][10])
+  for data in a:
+    if (data[5]!='active'):
+      continue
+    for dist in district:
+      print(dist)
+      if(dist[0]==data[10]):
+        pro=dist[3]
+        break 
+    # print(data[6])
+    if (pro==1):
+      p1=p1+1
+    elif (pro==2):
+      p2=p2+1
+    elif (pro==3):
+      p3=p3+1
+    elif (pro==4):
+      p4=p4+1
+    elif (pro==5):
+      p5=p5+1
+    elif (pro==6):
+      p6=p6+1
+    elif (pro==7):
+      p7=p7+1
+    
+  db.insertprovince(1,"Province No. 1",'p1',p1,14534943)
+  db.insertprovince(2,"Province No. 2",'p2',p2,5404145)
+  db.insertprovince(3,"Bagmati Province",'p3',p3,5529452)
+  db.insertprovince(4,"Gandaki Province",'p4',p4,2403757)
+  db.insertprovince(5,"Lumbini Province",'p5',p5,4499272)
+  db.insertprovince(6,"Karnali Province",'p6',p6,1570418)
+  db.insertprovince(7,"Sudurpashchim Province",'p7',p7,2552517)
+  
+  return "True"
+
+if __name__ == "__main__":
+    app.run(debug=True)
+
+

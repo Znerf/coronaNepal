@@ -1,6 +1,7 @@
 
 import mysql.connector
 import env
+import json
 
 mydb = mysql.connector.connect(
             host=env.HOST,
@@ -98,3 +99,118 @@ class db:
         mydb.commit()
         
         return myresult
+
+    def readIndividual():
+        sql = ("SELECT individual.gender,individual.age,individual.occupation,individual.`created-date`,individual.`modified-date`, status.`status`,status.`is-reinfected`,status.type,status.reportedon,status.recoveredon,location.`district-id`,location.`municipality-id`,coordinate.x,coordinate.y \
+                FROM individual \
+                INNER JOIN status ON individual.`status-id` = status.statusid \
+                INNER JOIN location ON individual.`location-id` = location.locationid \
+                INNER JOIN coordinate ON individual.`coordinate-id` = coordinate.coordinateid;")
+
+        mycursor.execute(sql)
+        myresult = mycursor.fetchall()
+
+        mydb.commit()
+        return (json.dumps(myresult))
+    def readIndividualnon():
+        sql = ("SELECT individual.gender,individual.age,individual.occupation,individual.`created-date`,individual.`modified-date`, status.`status`,status.`is-reinfected`,status.type,status.reportedon,status.recoveredon,location.`district-id`,location.`municipality-id`,coordinate.x,coordinate.y \
+                FROM individual \
+                INNER JOIN status ON individual.`status-id` = status.statusid \
+                INNER JOIN location ON individual.`location-id` = location.locationid \
+                INNER JOIN coordinate ON individual.`coordinate-id` = coordinate.coordinateid;")
+
+        mycursor.execute(sql)
+        myresult = mycursor.fetchall()
+
+        mydb.commit()
+        return (myresult)
+    def readDistrict():
+        sql = ("SELECT district.districtid,district.name,district.code,district.province,coordinate.x,coordinate.y, mapCoordinate.bbox1,mapCoordinate.bbox2,mapCoordinate.bbox3,mapCoordinate.bbox4\
+                FROM district \
+                INNER JOIN coordinate ON district.`centroid-coordinate` = coordinate.coordinateid \
+                INNER JOIN mapCoordinate ON district.bbox = mapCoordinate.mapid ")
+
+        mycursor.execute(sql)
+        myresult = mycursor.fetchall()
+
+        mydb.commit()
+        return (json.dumps(myresult))
+    def readDistrictnon():
+        sql = ("SELECT district.districtid,district.name,district.code,district.province,coordinate.x,coordinate.y, mapCoordinate.bbox1,mapCoordinate.bbox2,mapCoordinate.bbox3,mapCoordinate.bbox4\
+                FROM district \
+                INNER JOIN coordinate ON district.`centroid-coordinate` = coordinate.coordinateid \
+                INNER JOIN mapCoordinate ON district.bbox = mapCoordinate.mapid ")
+
+        mycursor.execute(sql)
+        myresult = mycursor.fetchall()
+
+        mydb.commit()
+        return (myresult)
+    
+    def readMun():
+        sql = ("SELECT municipality.municipalityid,municipality.name,municipality.code,municipality.type,coordinate.x,coordinate.y, mapCoordinate.bbox1,mapCoordinate.bbox2,mapCoordinate.bbox3,mapCoordinate.bbox4\
+                FROM municipality \
+                INNER JOIN coordinate ON municipality.`centroid-coordinate` = coordinate.coordinateid \
+                INNER JOIN mapCoordinate ON municipality.bbox = mapCoordinate.mapid ")
+
+        mycursor.execute(sql)
+        myresult = mycursor.fetchall()
+
+        mydb.commit()
+        return (json.dumps(myresult))
+    
+    # def insertuser(username,email,password):
+
+    #     sql = ("""INSERT INTO user (username,password,email) VALUES (%s,%s,%s) """)
+
+    #     val=(username,password,email)
+    #     mycursor.execute(sql, val)
+    #     mydb.commit()
+        
+    #     return True
+    # def checkemail(username,email):
+
+    #     sql = ("""SELECT username,email FROM user WHERE username=%s or email=%s """)
+
+    #     val=(username,email)
+    #     mycursor.execute(sql, val)
+    #     myresult = mycursor.fetchall()
+    #     mydb.commit()
+        
+    #     return myresult
+    # def checklogin(username,password):
+
+    #     sql = ("""SELECT username,password FROM user WHERE username=%s and password=%s """)
+
+    #     val=(username,password)
+    #     mycursor.execute(sql, val)
+    #     myresult = mycursor.fetchall()
+    #     mydb.commit()
+        
+    #     return myresult
+
+    def deletepro():
+        
+        sql = ("DELETE FROM province")
+        mycursor.execute(sql)
+        mydb.commit()
+        return True
+
+    def insertprovince(provinceid,provincename,code,infectednum,population):
+        sql = ("""INSERT INTO province (`provinceid`,`provincename`,`code`,`infected-num`,`population`) VALUES (%s,%s,%s,%s,%s) """)
+    
+        val=(provinceid,provincename,code,infectednum,population)
+        mycursor.execute(sql, val)
+        mydb.commit()
+        
+        return True
+    
+    def readProvince():
+        sql = ("SELECT * FROM province")
+
+        mycursor.execute(sql)
+        myresult = mycursor.fetchall()
+
+        mydb.commit()
+        
+        return (json.dumps(myresult))
